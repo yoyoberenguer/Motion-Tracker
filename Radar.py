@@ -81,22 +81,21 @@ class Halo(pygame.sprite.Sprite):
         self.dt += GL.TIME_PASSED_SECONDS
 
 
-def make_echo(array_):
+def make_echo(array_, echo_):
 
-    echo = 1
     samples = array_.shape[0]
     # echo start e.g (31712 / 8) * 4 = 15856 start at 1/2 of the first sampling
     # freq = 44100
     # period = 1 / freq = 22.6 u seconds
     # 15856 * 22.6 u seconds = 0.359 seconds (start of the first echo)
     start = int((samples / 8) * 8)
-    total_time = echo * array_.shape[0] + start
+    total_time = echo_ * array_.shape[0] + start
     # size = (array_.shape[0] + int(echo_length * array_.shape[0]), array_.shape[1])
     size = (total_time, array_.shape[1])
     echoed_array = numpy.zeros(size, numpy.int16)
     echoed_array[0:samples] = array_
 
-    for i in range(echo):
+    for i in range(echo_):
         echoed_array[start * i: samples + start * i] += array_ >> i + 1
 
     return sndarray.make_sound(echoed_array.astype(numpy.int16))
@@ -391,7 +390,7 @@ class Radar(pygame.sprite.Sprite):
         self.val = 0
         self.screen = (pygame.display.get_surface()).get_rect()
         self.pulsating = False              # Default radar is not pulsating
-        self.pulse_time = 70                # time between pulse, 70 frames
+        self.pulse_time = 110                # time between pulse, 70 frames
         self.last_pulse = 0                 # time of the last pulse (frame number)
         Radar.inventory.append(self)
 
@@ -454,11 +453,11 @@ class Radar(pygame.sprite.Sprite):
                 if None not in res:
                     # if not SND.get_identical_id(id(pulse)):
                     if self.is_still_loading_up():
-                        Halo(self.rect, 15, 0)
+                        Halo(self.rect, 1, 0)
                         self.pulsating = True
                         self.last_pulse = FRAME
                         global MOUSE_POS
-                        pulse_array = make_echo(pygame.sndarray.samples(pulse))
+                        pulse_array = make_echo(pygame.sndarray.samples(pulse), 2)
                         SND.play(sound_=pulse_array, loop_=False,
                                  priority_=0, volume_=min(1 - distance_, 1), fade_out_ms=0, panning_=True,
                                  name_='PULSE', x_=MOUSE_POS[0], object_id_=id(pulse))
