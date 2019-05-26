@@ -8,6 +8,8 @@ The echo is proportional to the screen centre (maximum gain in the centre).
 
 You can of course place the radar referential point to a different location if you need to show only enemy coming from ahead. 
 
+Try it on your desktop, download the folder Assets and Radar.exe (put them in the same directory) then double click on Radar.exe 
+
 ![alt text](https://github.com/yoyoberenguer/Radar/blob/master/screenshot1.png)
 
 ![alt text](https://github.com/yoyoberenguer/Radar/blob/master/screenshot2.png)
