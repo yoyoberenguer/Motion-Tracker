@@ -1,5 +1,5 @@
 # Radar
-Game Radar Effect
+Game motion tracker 
 
 ![alt text](https://github.com/yoyoberenguer/Radar/blob/master/screenshot1.png)
 
