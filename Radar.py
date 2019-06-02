@@ -390,8 +390,11 @@ class Radar(pygame.sprite.Sprite):
         self.val = 0
         self.screen = (pygame.display.get_surface()).get_rect()
         self.pulsating = False              # Default radar is not pulsating
-        self.pulse_time = 110                # time between pulse, 70 frames
+        self.pulse_time = 110               # time between pulse, 70 frames
         self.last_pulse = 0                 # time of the last pulse (frame number)
+
+        # self.pulse_array = make_echo(pygame.sndarray.samples(pulse), 1)
+
         Radar.inventory.append(self)
 
     @staticmethod
@@ -457,8 +460,7 @@ class Radar(pygame.sprite.Sprite):
                         self.pulsating = True
                         self.last_pulse = FRAME
                         global MOUSE_POS
-                        pulse_array = make_echo(pygame.sndarray.samples(pulse), 2)
-                        SND.play(sound_=pulse_array, loop_=False,
+                        SND.play(sound_=pulse, loop_=False,
                                  priority_=0, volume_=min(1 - distance_, 1), fade_out_ms=0, panning_=True,
                                  name_='PULSE', x_=MOUSE_POS[0], object_id_=id(pulse))
                     else:
@@ -468,6 +470,17 @@ class Radar(pygame.sprite.Sprite):
                     hrect.center -= pygame.math.Vector2(dot_w, dot_h) / 2
                     self.image.blit(dot_shape[self.val % len(dot_shape) - 1] if isinstance(dot_shape, list) else
                                     dot_shape, hrect.center, special_flags=pygame.BLEND_RGB_ADD)
+                else:
+                    if self.is_still_loading_up():
+                        Halo(self.rect, 1, 0)
+                        self.pulsating = True
+                        self.last_pulse = FRAME
+
+                        SND.play(sound_=FLAT_PULSE, loop_=False,
+                                 priority_=0, volume_=0.2, fade_out_ms=0, panning_=False,
+                                 name_='FLAT_PULSE', object_id_=id(pulse))
+                    else:
+                        self.pulsating = False
 
             self.index += 1.2
 
@@ -628,6 +641,7 @@ if __name__ == '__main__':
     Halo.images = HALO_SPRITE
 
     pulse = pygame.mixer.Sound('Assets\\pulse.ogg')
+    FLAT_PULSE = pygame.mixer.Sound('Assets\\Flat_pulse.ogg')
     SoundServer.SoundControl.SCREENRECT = SCREENRECT
     SND = SoundServer.SoundControl(10)
 
